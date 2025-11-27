@@ -33,6 +33,7 @@
     "typescript": "^5.3.3"
   },
   "devDependencies": {
+    "@vercel/node": "^5.5.13",
     "rimraf": "^5.0.5",
     "ts-node-dev": "^2.0.0"
   }
