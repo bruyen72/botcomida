@@ -8,7 +8,12 @@
       "Bash(npx tsc:*)",
       "Bash(node scripts/copy-public.js:*)",
       "Bash(npx typescript)",
-      "Bash(./node_modules/.bin/tsc:*)"
+      "Bash(./node_modules/.bin/tsc:*)",
+      "Bash(git update-index:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git restore:*)"
     ],
     "deny": [],
     "ask": []
