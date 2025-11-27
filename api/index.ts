@@ -263,8 +263,6 @@ async function initBot() {
     const m = messages[0];
     if (!m.message || m.key.fromMe || m.key.remoteJid?.endsWith('@g.us')) return;
 
-    const messageText = m.message.conversation || m.message.extendedTextMessage?.text || '';
-
     // Resposta simples
     await sock.sendMessage(m.key.remoteJid!, {
       text: 'Olá! Este bot está rodando no Vercel Serverless (modo de demonstração). A conexão pode ser instável. Para produção, use Railway ou Render!'
