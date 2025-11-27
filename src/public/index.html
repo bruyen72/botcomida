@@ -15,39 +15,42 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 20px;
 }
 
 .container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.card {
   background: white;
   border-radius: 20px;
   padding: 40px;
-  max-width: 500px;
-  width: 100%;
   box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-  text-align: center;
+  margin-bottom: 20px;
 }
 
 h1 {
   color: #667eea;
   margin-bottom: 10px;
-  font-size: 28px;
+  font-size: 32px;
+  text-align: center;
 }
 
 .subtitle {
   color: #666;
   margin-bottom: 30px;
-  font-size: 14px;
+  font-size: 16px;
+  text-align: center;
 }
 
 .status {
-  padding: 15px;
+  padding: 20px;
   border-radius: 10px;
   margin-bottom: 20px;
   font-weight: 500;
+  text-align: center;
 }
 
 .status.loading {
@@ -75,6 +78,7 @@ h1 {
   padding: 20px;
   background: #f9fafb;
   border-radius: 10px;
+  text-align: center;
 }
 
 #qrcode {
@@ -83,26 +87,139 @@ h1 {
   height: auto;
   margin: 0 auto;
   display: block;
+  border: 3px solid #667eea;
+  border-radius: 10px;
+  padding: 10px;
+  background: white;
 }
 
-.instructions {
+.section {
+  margin: 30px 0;
+}
+
+.section h2 {
+  color: #667eea;
+  margin-bottom: 15px;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.steps {
   background: #f3f4f6;
   padding: 20px;
   border-radius: 10px;
-  margin-top: 20px;
-  text-align: left;
+  margin-top: 15px;
 }
 
-.instructions h3 {
+.step {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border-left: 4px solid #667eea;
+  display: flex;
+  gap: 15px;
+}
+
+.step-number {
+  background: #667eea;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-title {
+  font-weight: 600;
   color: #374151;
+  margin-bottom: 5px;
+}
+
+.step-desc {
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.menu-example {
+  background: #f9fafb;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+  border: 2px dashed #667eea;
+}
+
+.menu-example h3 {
+  color: #667eea;
   margin-bottom: 10px;
   font-size: 16px;
 }
 
-.instructions ol {
+.menu-item {
+  background: white;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.menu-item strong {
+  color: #667eea;
+  min-width: 30px;
+}
+
+.tips {
+  background: #dbeafe;
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 15px;
+  border-left: 4px solid #3b82f6;
+}
+
+.tips h3 {
+  color: #1e40af;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.tips ul {
   margin-left: 20px;
-  color: #6b7280;
+  color: #1e3a8a;
   line-height: 1.8;
+}
+
+.warning {
+  background: #fef3c7;
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 15px;
+  border-left: 4px solid #f59e0b;
+}
+
+.warning h3 {
+  color: #92400e;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.warning p {
+  color: #78350f;
+  line-height: 1.6;
 }
 
 .spinner {
@@ -128,32 +245,318 @@ h1 {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
 }
+
+.accordion {
+  background: #f3f4f6;
+  border-radius: 10px;
+  margin-top: 15px;
+  overflow: hidden;
+}
+
+.accordion-item {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.accordion-item:last-child {
+  border-bottom: none;
+}
+
+.accordion-header {
+  background: white;
+  padding: 15px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  color: #374151;
+  transition: background 0.3s;
+}
+
+.accordion-header:hover {
+  background: #f9fafb;
+}
+
+.accordion-header.active {
+  background: #667eea;
+  color: white;
+}
+
+.accordion-icon {
+  transition: transform 0.3s;
+}
+
+.accordion-header.active .accordion-icon {
+  transform: rotate(180deg);
+}
+
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  background: white;
+}
+
+.accordion-content.active {
+  max-height: 1000px;
+}
+
+.accordion-body {
+  padding: 15px;
+  color: #6b7280;
+  line-height: 1.8;
+}
+
+@media (max-width: 600px) {
+  .card {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  .step {
+    flex-direction: column;
+  }
+}
 </style>
 </head>
 <body>
 
 <div class="container">
-  <h1>🤖 Bot de Delivery</h1>
-  <p class="subtitle">WhatsApp Bot com Menu Interativo</p>
+  <!-- Status Card -->
+  <div class="card">
+    <h1>🤖 Bot de Delivery</h1>
+    <p class="subtitle">WhatsApp Bot com Menu Interativo Automático</p>
 
-  <div id="status" class="status loading">
-    <div class="spinner"></div>
-    <p>⏳ Inicializando bot...</p>
+    <div id="status" class="status loading">
+      <div class="spinner"></div>
+      <p>⏳ Inicializando bot...</p>
+    </div>
+
+    <div id="qr-container" class="qr-container" style="display: none;">
+      <img id="qrcode" src="" alt="QR Code">
+      <p style="margin-top: 15px; color: #667eea; font-weight: 600;">
+        📱 Escaneie este QR Code com seu WhatsApp
+      </p>
+    </div>
   </div>
 
-  <div id="qr-container" class="qr-container" style="display: none;">
-    <img id="qrcode" src="" alt="QR Code">
-  </div>
+  <!-- Tutorial Completo -->
+  <div class="card">
+    <div class="section">
+      <h2>📱 Passo 1: Conectar WhatsApp</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <div class="step-title">Abra o WhatsApp no celular</div>
+            <div class="step-desc">Certifique-se de estar na tela principal do WhatsApp</div>
+          </div>
+        </div>
 
-  <div class="instructions">
-    <h3>📱 Como conectar:</h3>
-    <ol>
-      <li>Abra o WhatsApp no celular</li>
-      <li>Toque em "Mais opções" ou "Configurações"</li>
-      <li>Selecione "Aparelhos conectados"</li>
-      <li>Toque em "Conectar um aparelho"</li>
-      <li>Escaneie o QR Code acima</li>
-    </ol>
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <div class="step-title">Acesse "Aparelhos conectados"</div>
+            <div class="step-desc">
+              <strong>Android:</strong> Toque nos 3 pontos (⋮) → "Aparelhos conectados"<br>
+              <strong>iPhone:</strong> Vá em "Ajustes" → "Aparelhos conectados"
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <div class="step-title">Conectar novo aparelho</div>
+            <div class="step-desc">Toque em "Conectar um aparelho" ou no botão "+"</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <div class="step-title">Escaneie o QR Code</div>
+            <div class="step-desc">Aponte a câmera do celular para o QR Code que aparece acima</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">5</div>
+          <div class="step-content">
+            <div class="step-title">Aguarde a conexão</div>
+            <div class="step-desc">O status mudará para "✅ Bot conectado e funcionando!" em alguns segundos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>💬 Passo 2: Como Usar o Bot</h2>
+
+      <div class="menu-example">
+        <h3>📋 Exemplo de Conversa:</h3>
+
+        <div class="menu-item">
+          <strong>Você:</strong> Oi
+        </div>
+        <div class="menu-item" style="background: #f0f9ff;">
+          <strong>🤖 Bot:</strong> Olá! Bem-vindo ao nosso delivery! 🍕
+        </div>
+        <div class="menu-item" style="background: #f0f9ff; flex-direction: column; align-items: flex-start;">
+          <div><strong>1️⃣</strong> Ver cardápio</div>
+          <div><strong>2️⃣</strong> Meu carrinho</div>
+          <div><strong>3️⃣</strong> Finalizar pedido</div>
+          <div><strong>4️⃣</strong> Acompanhar pedido</div>
+          <div><strong>5️⃣</strong> Falar com atendente</div>
+        </div>
+
+        <div class="menu-item">
+          <strong>Você:</strong> 1
+        </div>
+        <div class="menu-item" style="background: #f0f9ff; flex-direction: column; align-items: flex-start;">
+          <div><strong>🤖 Bot:</strong> Escolha uma categoria:</div>
+          <div><strong>1️⃣</strong> 🍕 Pizzas</div>
+          <div><strong>2️⃣</strong> 🍔 Hambúrgueres</div>
+          <div><strong>3️⃣</strong> 🥤 Bebidas</div>
+          <div><strong>0️⃣</strong> ← Voltar</div>
+        </div>
+
+        <div class="menu-item">
+          <strong>Você:</strong> 1
+        </div>
+        <div class="menu-item" style="background: #f0f9ff; flex-direction: column; align-items: flex-start;">
+          <div><strong>🤖 Bot:</strong> 🍕 Pizzas disponíveis:</div>
+          <div><strong>1️⃣</strong> Pizza Margherita - R$ 35,00</div>
+          <div><strong>2️⃣</strong> Pizza Calabresa - R$ 38,00</div>
+          <div><strong>3️⃣</strong> Pizza 4 Queijos - R$ 42,00</div>
+          <div><strong>0️⃣</strong> ← Voltar</div>
+        </div>
+
+        <div class="menu-item">
+          <strong>Você:</strong> 1
+        </div>
+        <div class="menu-item" style="background: #f0f9ff;">
+          <strong>🤖 Bot:</strong> Quantas unidades de Pizza Margherita?
+        </div>
+
+        <div class="menu-item">
+          <strong>Você:</strong> 2
+        </div>
+        <div class="menu-item" style="background: #f0f9ff; flex-direction: column; align-items: flex-start;">
+          <div><strong>🤖 Bot:</strong> ✅ 2x Pizza Margherita adicionado!</div>
+          <div>Subtotal: R$ 70,00</div>
+          <div><strong>1️⃣</strong> Ver meu carrinho</div>
+          <div><strong>2️⃣</strong> Continuar comprando</div>
+          <div><strong>0️⃣</strong> Menu principal</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>💡 Dicas Importantes</h2>
+
+      <div class="tips">
+        <h3>✅ Boas Práticas:</h3>
+        <ul>
+          <li><strong>Digite apenas números</strong> - Use 1, 2, 3, etc para navegar</li>
+          <li><strong>Use 0 para voltar</strong> - Em qualquer menu, digite 0 para voltar</li>
+          <li><strong>Revise antes de finalizar</strong> - Sempre veja o carrinho antes de confirmar</li>
+          <li><strong>Aguarde as respostas</strong> - O bot responde em 1-2 segundos</li>
+          <li><strong>Digite "menu"</strong> a qualquer momento para voltar ao início</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>❓ Dúvidas Frequentes</h2>
+
+      <div class="accordion">
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(0)">
+            <span>O que fazer se o QR Code não aparecer?</span>
+            <span class="accordion-icon">▼</span>
+          </div>
+          <div class="accordion-content">
+            <div class="accordion-body">
+              Aguarde 30-60 segundos. Se não aparecer, recarregue a página (F5). O bot pode estar iniciando pela primeira vez.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(1)">
+            <span>Como voltar ao menu anterior?</span>
+            <span class="accordion-icon">▼</span>
+          </div>
+          <div class="accordion-content">
+            <div class="accordion-body">
+              Digite <strong>0</strong> (zero) em qualquer menu para voltar. Você também pode digitar <strong>"menu"</strong> para voltar ao menu principal.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(2)">
+            <span>O bot demora a responder?</span>
+            <span class="accordion-icon">▼</span>
+          </div>
+          <div class="accordion-content">
+            <div class="accordion-body">
+              As respostas levam 1-2 segundos. Se demorar mais de 10 segundos, verifique sua conexão de internet ou recarregue a página.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(3)">
+            <span>Como adicionar mais itens ao carrinho?</span>
+            <span class="accordion-icon">▼</span>
+          </div>
+          <div class="accordion-content">
+            <div class="accordion-body">
+              Após adicionar um item, escolha <strong>"2 - Continuar comprando"</strong>. Isso volta ao menu de categorias e você pode adicionar mais produtos.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(4)">
+            <span>Posso cancelar o pedido?</span>
+            <span class="accordion-icon">▼</span>
+          </div>
+          <div class="accordion-content">
+            <div class="accordion-body">
+              Sim! No carrinho, escolha <strong>"3 - Limpar carrinho"</strong> para remover todos os itens e começar de novo.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(5)">
+            <span>Como falar com um atendente humano?</span>
+            <span class="accordion-icon">▼</span>
+          </div>
+          <div class="accordion-content">
+            <div class="accordion-body">
+              No menu principal, escolha <strong>"5 - Falar com atendente"</strong>. O bot enviará as informações de contato.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="warning">
+        <h3>⚠️ Importante:</h3>
+        <p>
+          <strong>Mantenha o WhatsApp conectado:</strong> Este bot funciona enquanto o WhatsApp Web estiver conectado.
+          Se você desconectar todos os aparelhos, precisará escanear o QR Code novamente.
+        </p>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -171,28 +574,48 @@ async function checkStatus() {
 
     if (data.status === 'connected') {
       statusDiv.className = 'status connected';
-      statusDiv.innerHTML = '<p>✅ Bot conectado e funcionando!</p>';
+      statusDiv.innerHTML = '<p style="font-size: 18px;">✅ Bot conectado e funcionando!</p><p style="margin-top: 10px; font-size: 14px;">Envie uma mensagem para o número conectado para testar</p>';
       qrContainer.style.display = 'none';
       clearInterval(checkInterval);
     } else if (data.status === 'waiting' && data.qr) {
       statusDiv.className = 'status waiting';
-      statusDiv.innerHTML = '<p class="pulse">📱 Escaneie o QR Code abaixo</p>';
+      statusDiv.innerHTML = '<p class="pulse" style="font-size: 18px;">📱 Escaneie o QR Code abaixo com WhatsApp</p>';
       qrContainer.style.display = 'block';
       qrImg.src = data.qr;
     } else if (data.status === 'loading') {
       statusDiv.className = 'status loading';
-      statusDiv.innerHTML = '<div class="spinner"></div><p>⏳ Gerando QR Code...</p>';
+      statusDiv.innerHTML = '<div class="spinner"></div><p style="margin-top: 10px;">⏳ Gerando QR Code...</p><p style="margin-top: 5px; font-size: 14px;">Isso pode levar até 60 segundos</p>';
       qrContainer.style.display = 'none';
     } else if (data.status === 'error') {
       statusDiv.className = 'status error';
-      statusDiv.innerHTML = '<p>❌ Erro ao gerar QR Code</p>';
+      statusDiv.innerHTML = '<p>❌ Erro ao gerar QR Code</p><p style="margin-top: 5px; font-size: 14px;">Recarregue a página</p>';
       qrContainer.style.display = 'none';
     }
   } catch (error) {
     console.error('Erro ao verificar status:', error);
     const statusDiv = document.getElementById('status');
     statusDiv.className = 'status error';
-    statusDiv.innerHTML = '<p>❌ Erro de conexão com servidor</p>';
+    statusDiv.innerHTML = '<p>❌ Erro de conexão</p><p style="margin-top: 5px; font-size: 14px;">Verifique se o servidor está online</p>';
+  }
+}
+
+function toggleAccordion(index) {
+  const headers = document.querySelectorAll('.accordion-header');
+  const contents = document.querySelectorAll('.accordion-content');
+
+  const header = headers[index];
+  const content = contents[index];
+
+  const isActive = header.classList.contains('active');
+
+  // Fechar todos
+  headers.forEach(h => h.classList.remove('active'));
+  contents.forEach(c => c.classList.remove('active'));
+
+  // Abrir o clicado (se não estava aberto)
+  if (!isActive) {
+    header.classList.add('active');
+    content.classList.add('active');
   }
 }
 
