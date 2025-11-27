@@ -1,32 +1,29 @@
 #!/bin/bash
 
 # Render Build Script para Puppeteer/WhatsApp-Web.js
-# Instala dependências necessárias para o bot
+# Gerencia cache do Puppeteer entre deploys
 
 set -e
 
 echo "🔧 Iniciando build para Render..."
 
-# Instalar dependências do Chrome/Chromium
-echo "📦 Instalando dependências do sistema..."
-apt-get update -qq
-apt-get install -y -qq \
-  libnss3 \
-  libatk1.0-0 \
-  libatk-bridge2.0-0 \
-  libcups2 \
-  libxkbcommon0 \
-  libxcomposite1 \
-  libxdamage1 \
-  libxrandr2 \
-  libgbm1 \
-  libasound2 \
-  libpangocairo-1.0-0 \
-  libgtk-3-0 > /dev/null 2>&1
+# Criar diretório de cache do Puppeteer
+echo "📂 Configurando cache do Puppeteer..."
+mkdir -p .cache/puppeteer
+
+# Copiar cache do Puppeteer do build anterior (se existir)
+if [ -d "/opt/render/project/.cache/puppeteer" ]; then
+  echo "♻️ Restaurando cache do Puppeteer..."
+  cp -r /opt/render/project/.cache/puppeteer .cache/ || true
+fi
 
 # Instalar dependências do Node
 echo "📦 Instalando dependências NPM..."
 npm install
+
+# Instalar Chrome via Puppeteer
+echo "🌐 Instalando Chrome..."
+npx puppeteer browsers install chrome || true
 
 # Build do TypeScript
 echo "🔨 Compilando TypeScript..."

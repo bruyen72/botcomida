@@ -17,3 +17,5 @@ services:
         value: Meu Delivery
       - key: RESTAURANT_PHONE
         value: 5511999999999
+      - key: PUPPETEER_CACHE_DIR
+        value: /opt/render/project/.cache/puppeteer
