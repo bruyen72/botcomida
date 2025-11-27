@@ -125,22 +125,32 @@ function initializeBot() {
 
   botClient.on('message', async (message) => {
     try {
+      console.log(`\n📩 Nova mensagem recebida de: ${message.from}`);
+      console.log(`📝 Conteúdo: "${message.body}"`);
+      console.log(`📊 Tipo: ${message.type}`);
+
       if (message.from.endsWith('@g.us')) {
+        console.log('⏭️ Ignorando mensagem de grupo');
         return;
       }
 
       if (message.from === 'status@broadcast') {
+        console.log('⏭️ Ignorando status broadcast');
         return;
       }
 
       if (message.hasMedia) {
+        console.log('🖼️ Mensagem com mídia detectada');
         await message.reply('Obrigado pela imagem! No momento só consigo processar mensagens de texto. 😊');
         return;
       }
 
+      console.log('✅ Processando mensagem...');
       await messageHandler.handleMessage(message);
+      console.log('✅ Mensagem processada com sucesso!\n');
     } catch (error) {
       console.error('❌ Erro ao processar mensagem:', error);
+      console.error('Stack trace:', error instanceof Error ? error.stack : 'N/A');
       try {
         await message.reply(
           'Desculpe, ocorreu um erro ao processar sua mensagem. 😕\n\n' +

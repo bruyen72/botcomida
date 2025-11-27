@@ -11,22 +11,26 @@ export class MessageHandler {
     const customer = customerManager.getCustomer(phoneNumber);
 
     console.log(`📱 Mensagem de ${phoneNumber}: ${messageText}`);
+    console.log(`👤 Estado atual do cliente: ${customer.conversationState}`);
 
     const lowerMessage = messageText.toLowerCase();
 
     if (customer.conversationState === 'ended') {
+      console.log('🔄 Conversa estava encerrada, reiniciando...');
       await message.reply(messageService.getWelcomeMessage());
       customerManager.updateCustomerState(phoneNumber, 'initial');
       return;
     }
 
     if (this.isGreeting(lowerMessage)) {
+      console.log('👋 Saudação detectada, enviando boas-vindas...');
       await message.reply(messageService.getWelcomeMessage());
       customerManager.updateCustomerState(phoneNumber, 'initial');
       return;
     }
 
     if (this.isMenuRequest(lowerMessage)) {
+      console.log('📋 Solicitação de menu detectada...');
       await message.reply(messageService.getWelcomeMessage());
       customerManager.updateCustomerState(phoneNumber, 'initial');
       return;
