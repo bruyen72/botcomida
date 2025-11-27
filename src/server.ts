@@ -18,7 +18,7 @@ let isConnected = false;
 let isLoading = true;
 
 // Servir arquivos estáticos
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // API: Status do bot
 app.get('/api/status', (_req, res) => {
@@ -62,7 +62,7 @@ app.get('/api/qrcode', async (_req, res) => {
 
 // Página principal
 app.get('/', (_req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Inicializar bot do WhatsApp
