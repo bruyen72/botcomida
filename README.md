@@ -75,42 +75,19 @@ RESTAURANT_PHONE=5511999999999
 
 ---
 
-## ✅ OPÇÃO 2: RENDER (GRÁTIS!)
+## ❌ OPÇÃO 2: RENDER (NÃO RECOMENDADO!)
 
-**Render tem plano grátis!**
+**⚠️ Render NÃO funciona bem para bot WhatsApp!**
 
-### Passo a Passo:
+**Problemas:**
+- ⚠️ Dorme após 15min sem uso
+- ⚠️ Bot desconecta do WhatsApp
+- ⚠️ Cliente precisa escanear QR Code toda hora
+- ⚠️ Não mantém conexão estável
 
-**1. Criar conta**
-- Acesse: https://render.com
-- Login com GitHub
-
-**2. Novo Web Service**
-- Click **"New +"** → **"Web Service"**
-- Conecte seu repositório GitHub
-
-**3. Configurar**
-```
-Name: bot-delivery
-Environment: Node
-Build Command: npm install && npm run build
-Start Command: npm start
-```
-
-**4. Variáveis de ambiente**
-```
-PORT=3000
-ENABLE_AI=false
-RESTAURANT_NAME=Meu Delivery
-RESTAURANT_PHONE=5511999999999
-```
-
-**5. Deploy**
-- Click **"Create Web Service"**
-- Aguarde 3-5 minutos
-- URL: `https://seu-bot.onrender.com`
-
-**Custo:** GRÁTIS! (com limitações: dorme após 15min inativo)
+**Se ainda quiser tentar (não recomendamos):**
+- Veja arquivo `SOLUCAO-RENDER.md` para detalhes
+- Melhor usar Railway ou VPS!
 
 ---
 
@@ -301,14 +278,14 @@ pm2 restart bot-delivery
 
 ## 💰 CUSTOS COMPARADOS
 
-| Opção | Custo/Mês | Nota Fiscal | Estabilidade |
-|-------|-----------|-------------|--------------|
-| **Vercel** | ❌ Grátis | Não | ❌ Não funciona |
-| **Render** | ✅ Grátis | Não | ⚠️ Dorme após 15min |
-| **Railway** | $5 | Não | ✅ Excelente |
-| **Locaweb** | R$ 49-89 | ✅ Sim | ✅ Excelente |
-| **Umbler** | R$ 29-89 | ✅ Sim | ✅ Excelente |
-| **DigitalOcean** | $6 (~R$30) | Invoice | ✅ Excelente |
+| Opção | Custo/Mês | Nota Fiscal | Estabilidade | Recomendado |
+|-------|-----------|-------------|--------------|-------------|
+| **Vercel** | ❌ Grátis | Não | ❌ Não funciona | ❌ Não |
+| **Render** | ⚠️ Grátis | Não | ⚠️ Dorme/desconecta | ❌ Não |
+| **Railway** | $5 | Não | ✅ Excelente | ✅ **SIM!** |
+| **Locaweb** | R$ 49-89 | ✅ Sim | ✅ Excelente | ✅ **SIM!** |
+| **Umbler** | R$ 29-89 | ✅ Sim | ✅ Excelente | ✅ **SIM!** |
+| **DigitalOcean** | $6 (~R$30) | Invoice | ✅ Excelente | ✅ Sim |
 
 ---
 

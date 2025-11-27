@@ -69,22 +69,32 @@ app.get('/', (_req, res) => {
 function initializeBot() {
   console.log('🤖 Iniciando Bot de Delivery...\n');
 
+  const puppeteerOptions: any = {
+    headless: true,
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-accelerated-2d-canvas',
+      '--no-first-run',
+      '--no-zygote',
+      '--disable-gpu',
+      '--disable-background-timer-throttling',
+      '--disable-backgrounding-occluded-windows',
+      '--disable-renderer-backgrounding'
+    ]
+  };
+
+  // No Render, usa caminho do cache do Puppeteer
+  if (process.env.RENDER) {
+    puppeteerOptions.executablePath = '/opt/render/.cache/puppeteer/chrome/linux-*/chrome-linux64/chrome';
+  }
+
   botClient = new Client({
     authStrategy: new LocalAuth({
       clientId: 'delivery-bot'
     }),
-    puppeteer: {
-      headless: true,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-accelerated-2d-canvas',
-        '--no-first-run',
-        '--no-zygote',
-        '--disable-gpu'
-      ]
-    }
+    puppeteer: puppeteerOptions
   });
 
   botClient.on('qr', (qr) => {
