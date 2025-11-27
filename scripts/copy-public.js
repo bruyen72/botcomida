@@ -20,9 +20,16 @@ function copyDir(src, dest) {
   }
 }
 
-const publicSrc = path.join(__dirname, '..', 'public');
+const publicSrc = path.join(__dirname, '..', 'src', 'public');
 const publicDest = path.join(__dirname, '..', 'dist', 'public');
 
-console.log('Copiando arquivos públicos...');
-copyDir(publicSrc, publicDest);
-console.log('✅ Arquivos públicos copiados com sucesso!');
+console.log('📁 Copiando arquivos públicos...');
+console.log(`   De: ${publicSrc}`);
+console.log(`   Para: ${publicDest}`);
+
+if (fs.existsSync(publicSrc)) {
+  copyDir(publicSrc, publicDest);
+  console.log('✅ Arquivos públicos copiados com sucesso!');
+} else {
+  console.log('⚠️ Pasta public não encontrada, pulando...');
+}
