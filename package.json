@@ -7,8 +7,7 @@
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc && node scripts/copy-public.js",
     "start": "node dist/server.js",
-    "clean": "rimraf dist",
-    "postinstall": "npx puppeteer browsers install chrome || true"
+    "clean": "rimraf dist"
   },
   "keywords": ["whatsapp", "bot", "delivery", "typescript", "ai"],
   "author": "",

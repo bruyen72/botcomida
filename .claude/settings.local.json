@@ -4,7 +4,11 @@
       "Bash(npm install)",
       "Bash(npm run build:*)",
       "Bash(dir:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(npx tsc:*)",
+      "Bash(node scripts/copy-public.js:*)",
+      "Bash(npx typescript)",
+      "Bash(./node_modules/.bin/tsc:*)"
     ],
     "deny": [],
     "ask": []
