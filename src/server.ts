@@ -1,8 +1,15 @@
 import express from 'express';
 import path from 'path';
-import { Client, LocalAuth } from 'whatsapp-web.js';
+import makeWASocket, {
+  DisconnectReason,
+  useMultiFileAuthState,
+  Browsers,
+  WAMessage
+} from '@whiskeysockets/baileys';
 import qrcode from 'qrcode';
 import dotenv from 'dotenv';
+import { Boom } from '@hapi/boom';
+import pino from 'pino';
 import { messageHandler } from './handlers/messageHandler';
 
 dotenv.config();
@@ -12,7 +19,7 @@ const PORT = process.env.PORT || 3000;
 const RESTAURANT_NAME = process.env.RESTAURANT_NAME || 'Nosso Delivery';
 
 // Estado do bot
-let botClient: Client | null = null;
+let sock: any = null;
 let qrCodeData: string | null = null;
 let isConnected = false;
 let isLoading = true;
@@ -65,116 +72,82 @@ app.get('/', (_req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Inicializar bot do WhatsApp
-function initializeBot() {
-  console.log('🤖 Iniciando Bot de Delivery...\n');
-  console.log('⏳ Aguarde 30-60 segundos para o QR Code aparecer...\n');
+// Inicializar bot do WhatsApp com Baileys
+async function initializeBot() {
+  console.log('🤖 Iniciando Bot de Delivery com Baileys...\n');
 
-  botClient = new Client({
-    authStrategy: new LocalAuth({
-      clientId: 'delivery-bot'
-    }),
-    puppeteer: {
-      headless: true,
-      timeout: 60000,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-accelerated-2d-canvas',
-        '--no-first-run',
-        '--no-zygote',
-        '--disable-gpu',
-        '--disable-background-timer-throttling',
-        '--disable-backgrounding-occluded-windows',
-        '--disable-renderer-backgrounding',
-        '--single-process',
-        '--disable-extensions',
-        '--disable-software-rasterizer'
-      ]
-    },
-    webVersionCache: {
-      type: 'remote',
-      remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.3000.1014590669-alpha.html'
-    },
-    qrMaxRetries: 5
+  const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys');
+
+  sock = makeWASocket({
+    auth: state,
+    printQRInTerminal: false,
+    logger: pino({ level: 'silent' }),
+    browser: Browsers.ubuntu('Chrome')
   });
 
-  botClient.on('qr', (qr) => {
-    console.log('📱 QR CODE gerado!');
-    qrCodeData = qr;
-    isLoading = false;
+  // Evento: Atualização de conexão
+  sock.ev.on('connection.update', async (update: any) => {
+    const { connection, lastDisconnect, qr } = update;
+
+    if (qr) {
+      console.log('📱 QR CODE gerado!');
+      qrCodeData = qr;
+      isLoading = false;
+    }
+
+    if (connection === 'close') {
+      const shouldReconnect = (lastDisconnect?.error as Boom)?.output?.statusCode !== DisconnectReason.loggedOut;
+      console.log('⚠️ Conexão fechada. Reconectando:', shouldReconnect);
+      isConnected = false;
+
+      if (shouldReconnect) {
+        setTimeout(() => initializeBot(), 3000);
+      }
+    } else if (connection === 'open') {
+      console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.log(`✅ BOT ${RESTAURANT_NAME.toUpperCase()} ESTÁ ONLINE!`);
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+      console.log('🌐 Acesse:', `http://localhost:${PORT}`);
+      console.log('\n🎯 Bot pronto para receber mensagens!\n');
+
+      isConnected = true;
+      isLoading = false;
+      qrCodeData = null;
+    }
   });
 
-  botClient.on('authenticated', () => {
-    console.log('✅ Autenticado com sucesso!');
-  });
+  // Evento: Credenciais atualizadas
+  sock.ev.on('creds.update', saveCreds);
 
-  botClient.on('auth_failure', (msg) => {
-    console.error('❌ Falha na autenticação:', msg);
-    isLoading = false;
-  });
-
-  botClient.on('ready', () => {
-    console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log(`✅ BOT ${RESTAURANT_NAME.toUpperCase()} ESTÁ ONLINE!`);
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
-    console.log('🌐 Acesse:', `http://localhost:${PORT}`);
-    console.log('📊 Status:', `http://localhost:${PORT}/api/status`);
-    console.log('\n🎯 Bot pronto para receber mensagens!\n');
-
-    isConnected = true;
-    isLoading = false;
-    qrCodeData = null;
-  });
-
-  botClient.on('message', async (message) => {
+  // Evento: Mensagens recebidas
+  sock.ev.on('messages.upsert', async ({ messages }: { messages: WAMessage[] }) => {
     try {
-      console.log(`\n📩 Nova mensagem recebida de: ${message.from}`);
-      console.log(`📝 Conteúdo: "${message.body}"`);
-      console.log(`📊 Tipo: ${message.type}`);
+      const m = messages[0];
+      if (!m.message) return;
+      if (m.key.fromMe) return; // Ignora mensagens próprias
+      if (m.key.remoteJid?.endsWith('@g.us')) return; // Ignora grupos
 
-      if (message.from.endsWith('@g.us')) {
-        console.log('⏭️ Ignorando mensagem de grupo');
+      const messageText = m.message.conversation ||
+                         m.message.extendedTextMessage?.text ||
+                         '';
+
+      console.log(`\n📩 Nova mensagem recebida de: ${m.key.remoteJid}`);
+      console.log(`📝 Conteúdo: "${messageText}"`);
+
+      if (!messageText) {
+        console.log('⏭️ Mensagem sem texto, ignorando');
         return;
       }
 
-      if (message.from === 'status@broadcast') {
-        console.log('⏭️ Ignorando status broadcast');
-        return;
-      }
-
-      if (message.hasMedia) {
-        console.log('🖼️ Mensagem com mídia detectada');
-        await message.reply('Obrigado pela imagem! No momento só consigo processar mensagens de texto. 😊');
-        return;
-      }
-
+      // Processar mensagem
       console.log('✅ Processando mensagem...');
-      await messageHandler.handleMessage(message);
+      await messageHandler.handleBaileysMessage(sock, m, messageText);
       console.log('✅ Mensagem processada com sucesso!\n');
     } catch (error) {
       console.error('❌ Erro ao processar mensagem:', error);
       console.error('Stack trace:', error instanceof Error ? error.stack : 'N/A');
-      try {
-        await message.reply(
-          'Desculpe, ocorreu um erro ao processar sua mensagem. 😕\n\n' +
-          'Por favor, tente novamente ou digite *menu* para ver as opções.'
-        );
-      } catch (replyError) {
-        console.error('❌ Erro ao enviar mensagem de erro:', replyError);
-      }
     }
   });
-
-  botClient.on('disconnected', (reason) => {
-    console.log('⚠️ Bot desconectado:', reason);
-    isConnected = false;
-    console.log('🔄 Tentando reconectar...');
-  });
-
-  console.log('⏳ Inicializando WhatsApp Web...\n');
-  botClient.initialize();
 }
 
 // Iniciar servidor
@@ -189,8 +162,8 @@ app.listen(PORT, () => {
 // Tratar encerramento
 process.on('SIGINT', async () => {
   console.log('\n🛑 Encerrando bot...');
-  if (botClient) {
-    await botClient.destroy();
+  if (sock) {
+    await sock.logout();
   }
   console.log('✅ Bot encerrado com sucesso!');
   process.exit(0);

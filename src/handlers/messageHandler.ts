@@ -1,13 +1,12 @@
-import { Message } from 'whatsapp-web.js';
 import { customerManager } from '../services/customerManager';
 import { messageService } from '../services/messageService';
 import { aiService } from '../services/aiService';
 import { categories, getItemsByCategory, searchItems } from '../data/menu';
 
 export class MessageHandler {
-  async handleMessage(message: Message): Promise<void> {
-    const phoneNumber = message.from;
-    const messageText = message.body.trim();
+  // Método para Baileys
+  async handleBaileysMessage(sock: any, message: any, messageText: string): Promise<void> {
+    const phoneNumber = message.key.remoteJid!;
     const customer = customerManager.getCustomer(phoneNumber);
 
     console.log(`📱 Mensagem de ${phoneNumber}: ${messageText}`);
@@ -15,96 +14,102 @@ export class MessageHandler {
 
     const lowerMessage = messageText.toLowerCase();
 
+    // Função para enviar resposta
+    const sendReply = async (text: string) => {
+      await sock.sendMessage(phoneNumber, { text });
+    };
+
     if (customer.conversationState === 'ended') {
       console.log('🔄 Conversa estava encerrada, reiniciando...');
-      await message.reply(messageService.getWelcomeMessage());
+      await sendReply(messageService.getWelcomeMessage());
       customerManager.updateCustomerState(phoneNumber, 'initial');
       return;
     }
 
     if (this.isGreeting(lowerMessage)) {
       console.log('👋 Saudação detectada, enviando boas-vindas...');
-      await message.reply(messageService.getWelcomeMessage());
+      await sendReply(messageService.getWelcomeMessage());
       customerManager.updateCustomerState(phoneNumber, 'initial');
       return;
     }
 
     if (this.isMenuRequest(lowerMessage)) {
       console.log('📋 Solicitação de menu detectada...');
-      await message.reply(messageService.getWelcomeMessage());
+      await sendReply(messageService.getWelcomeMessage());
       customerManager.updateCustomerState(phoneNumber, 'initial');
       return;
     }
 
     switch (customer.conversationState) {
       case 'initial':
-        await this.handleInitialState(message, messageText, phoneNumber);
+        await this.handleInitialStateBaileys(sendReply, messageText, phoneNumber);
         break;
       case 'browsing_menu':
-        await this.handleBrowsingMenu(message, messageText, phoneNumber);
+        await this.handleBrowsingMenuBaileys(sendReply, messageText, phoneNumber);
         break;
       case 'viewing_category':
-        await this.handleViewingCategory(message, messageText, phoneNumber);
+        await this.handleViewingCategoryBaileys(sendReply, messageText, phoneNumber);
         break;
       case 'adding_to_cart':
-        await this.handleAddingToCart(message, messageText, phoneNumber);
+        await this.handleAddingToCartBaileys(sendReply, messageText, phoneNumber);
         break;
       case 'in_cart':
-        await this.handleInCart(message, messageText, phoneNumber);
+        await this.handleInCartBaileys(sendReply, messageText, phoneNumber);
         break;
       case 'checkout_address':
-        await this.handleCheckoutAddress(message, messageText, phoneNumber);
+        await this.handleCheckoutAddressBaileys(sendReply, messageText, phoneNumber);
         break;
       case 'checkout_payment':
-        await this.handleCheckoutPayment(message, messageText, phoneNumber);
+        await this.handleCheckoutPaymentBaileys(sendReply, messageText, phoneNumber);
         break;
       default:
-        await this.handleWithAI(message, messageText, phoneNumber);
+        await this.handleWithAIBaileys(sendReply, messageText, phoneNumber);
     }
   }
 
-  private async handleInitialState(message: Message, text: string, phoneNumber: string): Promise<void> {
+  // Métodos Baileys
+  private async handleInitialStateBaileys(sendReply: Function, text: string, phoneNumber: string): Promise<void> {
     const option = text.trim();
 
     switch (option) {
       case '1':
-        await message.reply(messageService.getCategoryMenu());
+        await sendReply(messageService.getCategoryMenu());
         customerManager.updateCustomerState(phoneNumber, 'browsing_menu');
         break;
       case '2':
-        await message.reply(messageService.getCartSummary(phoneNumber));
+        await sendReply(messageService.getCartSummary(phoneNumber));
         customerManager.updateCustomerState(phoneNumber, 'in_cart');
         break;
       case '3':
         const cart = customerManager.getCart(phoneNumber);
         if (cart.length === 0) {
-          await message.reply('Seu carrinho está vazio! Adicione itens primeiro. 😊\n\nDigite *1* para ver o cardápio.');
+          await sendReply('Seu carrinho está vazio! Adicione itens primeiro. 😊\n\nDigite *1* para ver o cardápio.');
         } else {
-          await message.reply(messageService.getCartSummary(phoneNumber));
+          await sendReply(messageService.getCartSummary(phoneNumber));
           customerManager.updateCustomerState(phoneNumber, 'in_cart');
         }
         break;
       case '4':
-        await message.reply('Em breve você poderá acompanhar seus pedidos! 🚚\n\nPor enquanto, entre em contato conosco para mais informações.');
+        await sendReply('Em breve você poderá acompanhar seus pedidos! 🚚\n\nPor enquanto, entre em contato conosco para mais informações.');
         break;
       case '5':
-        await message.reply(messageService.getContactHumanMessage());
+        await sendReply(messageService.getContactHumanMessage());
         break;
       case '11':
-        await message.reply(messageService.getGoodbyeMessage());
+        await sendReply(messageService.getGoodbyeMessage());
         customerManager.clearCart(phoneNumber);
         customerManager.updateCustomerState(phoneNumber, 'ended');
         break;
       default:
-        await this.handleWithAI(message, text, phoneNumber);
+        await this.handleWithAIBaileys(sendReply, text, phoneNumber);
     }
   }
 
-  private async handleBrowsingMenu(message: Message, text: string, phoneNumber: string): Promise<void> {
+  private async handleBrowsingMenuBaileys(sendReply: Function, text: string, phoneNumber: string): Promise<void> {
     const option = parseInt(text.trim());
 
     if (option === 0) {
-      await message.reply(messageService.getWelcomeMessage());
+      await sendReply(messageService.getWelcomeMessage());
       customerManager.updateCustomerState(phoneNumber, 'initial');
       return;
     }
@@ -113,20 +118,20 @@ export class MessageHandler {
       const category = categories[option - 1];
       const customer = customerManager.getCustomer(phoneNumber);
       (customer as any).tempCategory = category.id;
-      await message.reply(messageService.getItemsInCategory(category.id));
+      await sendReply(messageService.getItemsInCategory(category.id));
       customerManager.updateCustomerState(phoneNumber, 'viewing_category');
     } else {
-      await message.reply('Opção inválida. Digite um número de 0 a ' + categories.length);
+      await sendReply('Opção inválida. Digite um número de 0 a ' + categories.length);
     }
   }
 
-  private async handleViewingCategory(message: Message, text: string, phoneNumber: string): Promise<void> {
+  private async handleViewingCategoryBaileys(sendReply: Function, text: string, phoneNumber: string): Promise<void> {
     const option = parseInt(text.trim());
     const customer = customerManager.getCustomer(phoneNumber);
     const categoryId = (customer as any).tempCategory;
 
     if (option === 0) {
-      await message.reply(messageService.getCategoryMenu());
+      await sendReply(messageService.getCategoryMenu());
       customerManager.updateCustomerState(phoneNumber, 'browsing_menu');
       return;
     }
@@ -136,20 +141,20 @@ export class MessageHandler {
     if (option >= 1 && option <= items.length) {
       const item = items[option - 1];
       (customer as any).tempItem = item;
-      await message.reply(messageService.getItemDetails(item));
+      await sendReply(messageService.getItemDetails(item));
       customerManager.updateCustomerState(phoneNumber, 'adding_to_cart');
     } else {
-      await message.reply('Opção inválida. Digite um número de 0 a ' + items.length);
+      await sendReply('Opção inválida. Digite um número de 0 a ' + items.length);
     }
   }
 
-  private async handleAddingToCart(message: Message, text: string, phoneNumber: string): Promise<void> {
+  private async handleAddingToCartBaileys(sendReply: Function, text: string, phoneNumber: string): Promise<void> {
     const quantity = parseInt(text.trim());
     const customer = customerManager.getCustomer(phoneNumber);
     const item = (customer as any).tempItem;
 
     if (isNaN(quantity) || quantity < 1) {
-      await message.reply('Por favor, digite um número válido de unidades (mínimo 1).');
+      await sendReply('Por favor, digite um número válido de unidades (mínimo 1).');
       return;
     }
 
@@ -161,7 +166,7 @@ export class MessageHandler {
     delete (customer as any).tempItem;
     delete (customer as any).tempCategory;
 
-    await message.reply(
+    await sendReply(
       `✅ *${quantity}x ${item.name}* adicionado ao carrinho!\n\n` +
       `Subtotal: R$ ${(item.price * quantity).toFixed(2)}\n\n` +
       `O que deseja fazer agora?\n` +
@@ -173,73 +178,73 @@ export class MessageHandler {
     customerManager.updateCustomerState(phoneNumber, 'initial');
   }
 
-  private async handleInCart(message: Message, text: string, phoneNumber: string): Promise<void> {
+  private async handleInCartBaileys(sendReply: Function, text: string, phoneNumber: string): Promise<void> {
     const option = text.trim();
 
     switch (option) {
       case '1':
-        await message.reply(messageService.getCheckoutAddressMessage());
+        await sendReply(messageService.getCheckoutAddressMessage());
         customerManager.updateCustomerState(phoneNumber, 'checkout_address');
         break;
       case '2':
-        await message.reply(messageService.getCategoryMenu());
+        await sendReply(messageService.getCategoryMenu());
         customerManager.updateCustomerState(phoneNumber, 'browsing_menu');
         break;
       case '3':
         customerManager.clearCart(phoneNumber);
-        await message.reply('Carrinho limpo! 🗑️\n\nDigite *menu* para começar um novo pedido.');
+        await sendReply('Carrinho limpo! 🗑️\n\nDigite *menu* para começar um novo pedido.');
         customerManager.updateCustomerState(phoneNumber, 'initial');
         break;
       case '0':
-        await message.reply(messageService.getWelcomeMessage());
+        await sendReply(messageService.getWelcomeMessage());
         customerManager.updateCustomerState(phoneNumber, 'initial');
         break;
       default:
-        await message.reply('Opção inválida. Digite 1, 2, 3 ou 0.');
+        await sendReply('Opção inválida. Digite 1, 2, 3 ou 0.');
     }
   }
 
-  private async handleCheckoutAddress(message: Message, text: string, phoneNumber: string): Promise<void> {
+  private async handleCheckoutAddressBaileys(sendReply: Function, text: string, phoneNumber: string): Promise<void> {
     const customer = customerManager.getCustomer(phoneNumber);
     (customer as any).tempAddress = text;
 
-    await message.reply(messageService.getCheckoutPaymentMessage());
+    await sendReply(messageService.getCheckoutPaymentMessage());
     customerManager.updateCustomerState(phoneNumber, 'checkout_payment');
   }
 
-  private async handleCheckoutPayment(message: Message, text: string, phoneNumber: string): Promise<void> {
+  private async handleCheckoutPaymentBaileys(sendReply: Function, text: string, phoneNumber: string): Promise<void> {
     const option = text.trim();
     const customer = customerManager.getCustomer(phoneNumber);
 
     if (!['1', '2', '3', '4'].includes(option)) {
-      await message.reply('Opção inválida. Digite um número de 1 a 4.');
+      await sendReply('Opção inválida. Digite um número de 1 a 4.');
       return;
     }
 
     const address = (customer as any).tempAddress;
     const payment = messageService.getPaymentMethodName(option);
 
-    await message.reply(messageService.getOrderConfirmation(phoneNumber, address, payment));
+    await sendReply(messageService.getOrderConfirmation(phoneNumber, address, payment));
 
     customerManager.clearCart(phoneNumber);
     delete (customer as any).tempAddress;
     customerManager.updateCustomerState(phoneNumber, 'order_confirmed');
 
     setTimeout(async () => {
-      await message.reply(
+      await sendReply(
         '🍳 Seu pedido está sendo preparado!\n\n' +
         'Em breve estará a caminho. Obrigado pela preferência! 😊'
       );
     }, 3000);
   }
 
-  private async handleWithAI(message: Message, text: string, phoneNumber: string): Promise<void> {
+  private async handleWithAIBaileys(sendReply: Function, text: string, phoneNumber: string): Promise<void> {
     const customer = customerManager.getCustomer(phoneNumber);
 
     if (aiService.isEnabled()) {
       const aiResponse = await aiService.getResponse(text, customer);
       if (aiResponse) {
-        await message.reply(aiResponse);
+        await sendReply(aiResponse);
         return;
       }
     }
@@ -252,11 +257,11 @@ export class MessageHandler {
         response += `   ${item.description}\n\n`;
       });
       response += `Digite *menu* para ver todas as opções!`;
-      await message.reply(response);
+      await sendReply(response);
       return;
     }
 
-    await message.reply(messageService.getErrorMessage());
+    await sendReply(messageService.getErrorMessage());
   }
 
   private isGreeting(text: string): boolean {
