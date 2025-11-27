@@ -1,133 +1,81 @@
-module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Content-Type', 'text/html; charset=utf-8');
-
-  res.status(200).send(`
+export default function handler(request, response) {
+  response.status(200).send(`
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WhatsApp Bot - Vercel n„o suporta</title>
+  <title>WhatsApp Bot - Info</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: system-ui, sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
       padding: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
+      margin: 0;
     }
-    .container {
+    .box {
       background: white;
       border-radius: 20px;
       padding: 40px;
       max-width: 700px;
       box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     }
-    h1 {
-      color: #667eea;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    .error {
-      background: #fee2e2;
-      border-left: 4px solid #ef4444;
-      padding: 20px;
-      margin: 20px 0;
-      border-radius: 5px;
-    }
-    .success {
-      background: #d1fae5;
-      border-left: 4px solid #10b981;
-      padding: 20px;
-      margin: 20px 0;
-      border-radius: 5px;
-    }
-    .info {
-      background: #dbeafe;
-      border-left: 4px solid #3b82f6;
-      padding: 20px;
-      margin: 20px 0;
-      border-radius: 5px;
-    }
-    ul { margin: 10px 0 10px 20px; }
-    li { margin: 5px 0; }
+    h1 { color: #667eea; text-align: center; }
+    .error { background: #fee2e2; border-left: 4px solid #ef4444; padding: 15px; margin: 15px 0; }
+    .success { background: #d1fae5; border-left: 4px solid #10b981; padding: 15px; margin: 15px 0; }
     a { color: #3b82f6; }
-    .cta {
-      background: #10b981;
-      color: white;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-      margin: 30px 0;
-      font-weight: bold;
-      font-size: 1.2em;
-    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>† Vercel + WhatsApp Bot = L</h1>
+  <div class="box">
+    <h1>‚ö†Ô∏è Vercel + WhatsApp = ‚ùå</h1>
 
     <div class="error">
-      <h3>L Por que N√O funciona no Vercel:</h3>
+      <h3>Por que N√ÉO funciona no Vercel:</h3>
       <ul>
-        <li><strong>Timeout 60s:</strong> Bot precisa conex„o 24/7</li>
-        <li><strong>Sem disco:</strong> Perde sess„o do WhatsApp</li>
-        <li><strong>Serverless:</strong> Mata processo apÛs cada request</li>
-        <li><strong>Cold start:</strong> Demora 30-60s toda vez</li>
+        <li>Timeout 60s (bot precisa 24/7)</li>
+        <li>Sem disco persistente</li>
+        <li>Serverless mata processo</li>
       </ul>
     </div>
-
-    <h2> Onde FUNCIONA:</h2>
 
     <div class="success">
-      <h3>1. Railway - $5/mÍs (RECOMENDADO)</h3>
+      <h3>‚úÖ Onde FUNCIONA:</h3>
+      <p><strong>Railway</strong> - $5/m√™s (RECOMENDADO)</p>
       <ul>
-        <li> Online 24/7</li>
-        <li> QR Code em 10 segundos</li>
-        <li> Sess„o persiste</li>
-        <li> Deploy autom·tico GitHub</li>
+        <li>Online 24/7</li>
+        <li>QR Code r√°pido</li>
+        <li>Deploy GitHub autom√°tico</li>
       </ul>
-      <p><strong>Link:</strong> <a href="https://railway.app">railway.app</a></p>
+      <p><a href="https://railway.app">‚Üí railway.app</a></p>
+
+      <p><strong>Render</strong> - Gr√°tis</p>
+      <ul>
+        <li>Plano free dispon√≠vel</li>
+        <li>Funciona (mais lento)</li>
+      </ul>
+      <p><a href="https://render.com">‚Üí render.com</a></p>
     </div>
 
-    <div class="info">
-      <h3>2. Render - GR¡TIS</h3>
-      <ul>
-        <li> Plano gratuito</li>
-        <li>† Dorme apÛs 15 min (free)</li>
-        <li>† QR Code demora 30-60s</li>
-        <li>=∞ Pago $7/mÍs funciona bem</li>
-      </ul>
-      <p><strong>Link:</strong> <a href="https://render.com">render.com</a></p>
-    </div>
-
-    <h2>=Ä Como usar Railway (5 min):</h2>
+    <h2>Como usar (5 min):</h2>
     <ol>
-      <li>Acesse <a href="https://railway.app">railway.app</a></li>
-      <li>Login com GitHub</li>
-      <li>New Project í Deploy from GitHub</li>
-      <li>Selecione repositÛrio <code>botcomida</code></li>
-      <li>Adicione vari·veis ambiente</li>
-      <li>Deploy autom·tico </li>
+      <li>Acesse railway.app</li>
+      <li>Login GitHub</li>
+      <li>New Project ‚Üí GitHub repo</li>
+      <li>Selecione: botcomida</li>
+      <li>Deploy autom√°tico ‚úÖ</li>
     </ol>
 
-    <div class="cta">
-      <Ø Use Railway ou Render!<br>
-      Seu cÛdigo j· est· pronto!
-    </div>
-
-    <div class="info">
-      <p><strong>RepositÛrio GitHub:</strong><br>
-      <a href="https://github.com/bruyen72/botcomida">github.com/bruyen72/botcomida</a></p>
-      <p>O cÛdigo funciona perfeitamente em Railway/Render!</p>
-    </div>
+    <p style="text-align: center; margin-top: 30px;">
+      <strong>C√≥digo GitHub:</strong><br>
+      <a href="https://github.com/bruyen72/botcomida">github.com/bruyen72/botcomida</a>
+    </p>
   </div>
 </body>
 </html>
   `);
-};
+}
