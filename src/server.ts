@@ -68,6 +68,7 @@ app.get('/', (_req, res) => {
 // Inicializar bot do WhatsApp
 function initializeBot() {
   console.log('🤖 Iniciando Bot de Delivery...\n');
+  console.log('⏳ Aguarde 30-60 segundos para o QR Code aparecer...\n');
 
   botClient = new Client({
     authStrategy: new LocalAuth({
@@ -75,6 +76,7 @@ function initializeBot() {
     }),
     puppeteer: {
       headless: true,
+      timeout: 60000,
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
@@ -86,13 +88,16 @@ function initializeBot() {
         '--disable-background-timer-throttling',
         '--disable-backgrounding-occluded-windows',
         '--disable-renderer-backgrounding',
-        '--single-process'
+        '--single-process',
+        '--disable-extensions',
+        '--disable-software-rasterizer'
       ]
     },
     webVersionCache: {
       type: 'remote',
       remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.3000.1014590669-alpha.html'
-    }
+    },
+    qrMaxRetries: 5
   });
 
   botClient.on('qr', (qr) => {

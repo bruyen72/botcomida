@@ -96,7 +96,19 @@ function startStatusCheck() {
 // Mostrar loading
 function showLoading() {
     qrContainer.style.display = 'flex';
-    qrCanvas.innerHTML = '';
+    qrCanvas.innerHTML = `
+        <div style="padding: 40px; text-align: center;">
+            <div style="font-size: 3em; margin-bottom: 20px;">⏳</div>
+            <h3 style="color: #667eea;">Iniciando WhatsApp Bot...</h3>
+            <p style="margin-top: 15px; color: #666; max-width: 400px;">
+                O bot está carregando o Chrome e conectando ao WhatsApp Web.
+                <br><br>
+                <strong>Isso pode levar 30-60 segundos na primeira vez.</strong>
+                <br><br>
+                Aguarde, o QR Code vai aparecer automaticamente! 🚀
+            </p>
+        </div>
+    `;
     updateStatus('waiting', '⏳ Carregando...');
 }
 
