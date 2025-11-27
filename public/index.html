@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot de Delivery - Conectar WhatsApp</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 Bot de Delivery</h1>
+            <p class="subtitle">Escaneie o QR Code para conectar</p>
+        </header>
+
+        <div class="status-badge" id="statusBadge">
+            <span class="status-dot"></span>
+            <span id="statusText">Carregando...</span>
+        </div>
+
+        <div class="qr-section">
+            <div class="qr-container" id="qrContainer">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">Gerando QR Code...</p>
+            </div>
+            <div id="qrCanvas"></div>
+        </div>
+
+        <div class="instructions">
+            <h2>📱 Como Conectar</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Abra o WhatsApp</h3>
+                        <p>Abra o WhatsApp no seu celular</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Acesse Aparelhos Conectados</h3>
+                        <p>Toque em <strong>Menu (⋮)</strong> → <strong>Aparelhos conectados</strong></p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Conectar Aparelho</h3>
+                        <p>Toque em <strong>Conectar um aparelho</strong></p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Escaneie o QR Code</h3>
+                        <p>Aponte a câmera para o QR Code acima</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="how-to-use">
+            <h2>💬 Como Usar o Bot</h2>
+            <div class="chat-demo">
+                <div class="chat-message user">
+                    <strong>Você:</strong> oi
+                </div>
+                <div class="chat-message bot">
+                    <strong>Bot:</strong><br>
+                    Olá! Bem-vindo ao Meu Delivery! 👋<br><br>
+                    <strong>MENU PRINCIPAL:</strong><br>
+                    1️⃣ Ver cardápio<br>
+                    2️⃣ Ver meu carrinho<br>
+                    3️⃣ Fazer pedido<br>
+                    4️⃣ Acompanhar pedido<br>
+                    5️⃣ Falar com atendente<br>
+                    1️⃣1️⃣ Encerrar conversa
+                </div>
+                <div class="chat-message user">
+                    <strong>Você:</strong> 1
+                </div>
+                <div class="chat-message bot">
+                    <strong>Bot:</strong><br>
+                    📋 CARDÁPIO<br><br>
+                    1️⃣ 🍕 Pizzas<br>
+                    2️⃣ 🍔 Hambúrgueres<br>
+                    3️⃣ 🥤 Bebidas<br>
+                    4️⃣ 🍰 Sobremesas
+                </div>
+            </div>
+        </div>
+
+        <div class="tips">
+            <h2>💡 Dicas</h2>
+            <ul>
+                <li>✅ Mantenha seu celular com internet</li>
+                <li>✅ Não desconecte o WhatsApp Web</li>
+                <li>✅ Digite números para navegar pelo menu</li>
+                <li>✅ Digite "menu" a qualquer momento para voltar</li>
+                <li>✅ Digite "11" para encerrar a conversa</li>
+            </ul>
+        </div>
+
+        <footer>
+            <p>Bot desenvolvido com ❤️</p>
+            <button class="refresh-btn" onclick="location.reload()">🔄 Atualizar QR Code</button>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
