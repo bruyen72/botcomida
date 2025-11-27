@@ -131,21 +131,16 @@ async function initializeBot() {
                          m.message.extendedTextMessage?.text ||
                          '';
 
-      console.log(`\n📩 Nova mensagem recebida de: ${m.key.remoteJid}`);
-      console.log(`📝 Conteúdo: "${messageText}"`);
+      if (!messageText) return;
 
-      if (!messageText) {
-        console.log('⏭️ Mensagem sem texto, ignorando');
-        return;
-      }
+      console.log(`📩 ${m.key.remoteJid?.split('@')[0]}: "${messageText}"`);
 
-      // Processar mensagem
-      console.log('✅ Processando mensagem...');
-      await messageHandler.handleBaileysMessage(sock, m, messageText);
-      console.log('✅ Mensagem processada com sucesso!\n');
+      // Processar mensagem (sem await para responder mais rápido)
+      messageHandler.handleBaileysMessage(sock, m, messageText)
+        .then(() => console.log('✅'))
+        .catch(err => console.error('❌ Erro:', err.message));
     } catch (error) {
-      console.error('❌ Erro ao processar mensagem:', error);
-      console.error('Stack trace:', error instanceof Error ? error.stack : 'N/A');
+      console.error('❌ Erro ao processar mensagem:', error instanceof Error ? error.message : error);
     }
   });
 }

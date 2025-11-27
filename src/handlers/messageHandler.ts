@@ -8,10 +8,6 @@ export class MessageHandler {
   async handleBaileysMessage(sock: any, message: any, messageText: string): Promise<void> {
     const phoneNumber = message.key.remoteJid!;
     const customer = customerManager.getCustomer(phoneNumber);
-
-    console.log(`📱 Mensagem de ${phoneNumber}: ${messageText}`);
-    console.log(`👤 Estado atual do cliente: ${customer.conversationState}`);
-
     const lowerMessage = messageText.toLowerCase();
 
     // Função para enviar resposta
@@ -20,21 +16,18 @@ export class MessageHandler {
     };
 
     if (customer.conversationState === 'ended') {
-      console.log('🔄 Conversa estava encerrada, reiniciando...');
       await sendReply(messageService.getWelcomeMessage());
       customerManager.updateCustomerState(phoneNumber, 'initial');
       return;
     }
 
     if (this.isGreeting(lowerMessage)) {
-      console.log('👋 Saudação detectada, enviando boas-vindas...');
       await sendReply(messageService.getWelcomeMessage());
       customerManager.updateCustomerState(phoneNumber, 'initial');
       return;
     }
 
     if (this.isMenuRequest(lowerMessage)) {
-      console.log('📋 Solicitação de menu detectada...');
       await sendReply(messageService.getWelcomeMessage());
       customerManager.updateCustomerState(phoneNumber, 'initial');
       return;
@@ -149,12 +142,28 @@ export class MessageHandler {
   }
 
   private async handleAddingToCartBaileys(sendReply: Function, text: string, phoneNumber: string): Promise<void> {
-    const quantity = parseInt(text.trim());
     const customer = customerManager.getCustomer(phoneNumber);
+    const input = text.trim();
+
+    // Opção 0: Voltar ao menu de categorias
+    if (input === '0') {
+      delete (customer as any).tempItem;
+      const categoryId = (customer as any).tempCategory;
+      if (categoryId) {
+        await sendReply(messageService.getItemsInCategory(categoryId));
+        customerManager.updateCustomerState(phoneNumber, 'viewing_category');
+      } else {
+        await sendReply(messageService.getCategoryMenu());
+        customerManager.updateCustomerState(phoneNumber, 'browsing_menu');
+      }
+      return;
+    }
+
+    const quantity = parseInt(input);
     const item = (customer as any).tempItem;
 
     if (isNaN(quantity) || quantity < 1) {
-      await sendReply('Por favor, digite um número válido de unidades (mínimo 1).');
+      await sendReply('Por favor, digite um número válido de unidades (mínimo 1) ou *0* para voltar.');
       return;
     }
 
